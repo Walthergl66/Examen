@@ -1,20 +1,41 @@
 steps:
-  # Construye imagen del frontend (Next.js)
+  # Construir y subir backend
   - name: 'gcr.io/cloud-builders/docker'
-    args: ['build', '-t', 'gcr.io/$PROJECT_ID/agent-ui', './agent-ui']
+    args: ['build', '-t', 'gcr.io/$PROJECT_ID/backend-agent', '-f', 'Dockerfile', '.']
 
-  # Construye imagen del backend (Python)
   - name: 'gcr.io/cloud-builders/docker'
-    args: ['build', '-t', 'gcr.io/$PROJECT_ID/playground', '.']
+    args: ['push', 'gcr.io/$PROJECT_ID/backend-agent']
 
-  # Empuja imagen del frontend
+  # Desplegar backend
+  - name: 'gcr.io/google.com/cloudsdktool/cloud-sdk'
+    entrypoint: 'gcloud'
+    args:
+      [
+        'run', 'deploy', 'backend-agent',
+        '--image', 'gcr.io/$PROJECT_ID/backend-agent',
+        '--region', 'us-central1',
+        '--platform', 'managed',
+        '--allow-unauthenticated',
+        '--port', '7777',
+        '--set-env-vars', 'GROQ_API_KEY=tu_api_key_aqui'
+      ]
+
+  # Construir y subir frontend
   - name: 'gcr.io/cloud-builders/docker'
-    args: ['push', 'gcr.io/$PROJECT_ID/agent-ui']
+    args: ['build', '-t', 'gcr.io/$PROJECT_ID/frontend-agent', '-f', 'agent-ui/Dockerfile', 'agent-ui']
 
-  # Empuja imagen del backend
   - name: 'gcr.io/cloud-builders/docker'
-    args: ['push', 'gcr.io/$PROJECT_ID/playground']
+    args: ['push', 'gcr.io/$PROJECT_ID/frontend-agent']
 
-images:
-  - gcr.io/$PROJECT_ID/agent-ui
-  - gcr.io/$PROJECT_ID/playground
+  # Desplegar frontend
+  - name: 'gcr.io/google.com/cloudsdktool/cloud-sdk'
+    entrypoint: 'gcloud'
+    args:
+      [
+        'run', 'deploy', 'frontend-agent',
+        '--image', 'gcr.io/$PROJECT_ID/frontend-agent',
+        '--region', 'us-central1',
+        '--platform', 'managed',
+        '--allow-unauthenticated',
+        '--port', '3000'
+      ]

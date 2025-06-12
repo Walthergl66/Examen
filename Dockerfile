@@ -7,4 +7,6 @@ RUN pip install --no-cache-dir -r requirements.txt
 
 COPY playground.py ./
 
+EXPOSE 7777
+
 CMD ["python", "playground.py"]

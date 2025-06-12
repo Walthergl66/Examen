@@ -15,6 +15,10 @@ services:
       dockerfile: Dockerfile
     ports:
       - "7777:7777"
+
+    environment:
+      - GROQ_API_KEY=${GROQ_API_KEY}
+
     volumes:
       - ./:/app
     command: ["python", "playground.py"]
