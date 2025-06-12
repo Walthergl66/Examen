@@ -53,5 +53,6 @@ app.add_middleware(
 )
 
 if __name__ == "__main__":
-    port = int(os.environ.get("PORT", 7777))
-    serve_playground_app("playground:app", reload=True, host="0.0.0.0", port=port)
+    port = int(os.environ.get("PORT", 8080))
+    serve_playground_app("playground:app", host="0.0.0.0", port=port)
+
