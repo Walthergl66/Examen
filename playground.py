@@ -1,5 +1,4 @@
-from flask import Flask
-from flask_cors import CORS
+from fastapi.middleware.cors import CORSMiddleware
 from agno.agent import Agent
 from agno.models.openai import OpenAIChat
 from agno.playground import Playground, serve_playground_app
@@ -16,15 +15,10 @@ web_agent = Agent(
     model=Groq(id="llama-3.3-70b-versatile"),
     tools=[DuckDuckGoTools()],
     instructions=["Always include sources"],
-    # Store the agent sessions in a sqlite database
     storage=SqliteStorage(table_name="web_agent", db_file=agent_storage),
-    # Adds the current date and time to the instructions
     add_datetime_to_instructions=True,
-    # Adds the history of the conversation to the messages
     add_history_to_messages=True,
-    # Number of history responses to add to the messages
     num_history_responses=5,
-    # Adds markdown formatting to the messages
     markdown=True,
 )
 
@@ -40,10 +34,24 @@ finance_agent = Agent(
     markdown=True,
 )
 
+# Obtengo la app FastAPI desde Playground
 app = Playground(agents=[web_agent, finance_agent]).get_app()
 
+# Configuración CORS para permitir acceso desde frontend
+origins = [
+    "http://localhost:3000",
+    "https://examen-f-504888284293.us-central1.run.app",
+    # puedes agregar más URLs de frontend aquí
+]
+
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=origins,
+    allow_credentials=True,
+    allow_methods=["*"],
+    allow_headers=["*"],
+)
+
 if __name__ == "__main__":
-    # serve_playground_app("playground:app", reload=True)
-    # serve_playground_app("playground:app", reload=True, host="0.0.0.0", port=7777)
     port = int(os.environ.get("PORT", 8080))
     serve_playground_app("playground:app", reload=True, host="0.0.0.0", port=port)
