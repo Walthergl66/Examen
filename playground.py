@@ -7,7 +7,7 @@ from agno.storage.sqlite import SqliteStorage
 from agno.tools.duckduckgo import DuckDuckGoTools
 from agno.tools.yfinance import YFinanceTools
 from agno.models.groq import Groq
-
+import os
 
 agent_storage: str = "tmp/agents.db"
 
@@ -44,4 +44,6 @@ app = Playground(agents=[web_agent, finance_agent]).get_app()
 
 if __name__ == "__main__":
     # serve_playground_app("playground:app", reload=True)
-    serve_playground_app("playground:app", reload=True, host="0.0.0.0", port=7777)
+    # serve_playground_app("playground:app", reload=True, host="0.0.0.0", port=7777)
+    port = int(os.environ.get("PORT", 8080))
+    serve_playground_app("playground:app", reload=True, host="0.0.0.0", port=port)
