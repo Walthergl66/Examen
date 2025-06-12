@@ -1,0 +1,20 @@
+steps:
+  # Construye imagen del frontend (Next.js)
+  - name: 'gcr.io/cloud-builders/docker'
+    args: ['build', '-t', 'gcr.io/$PROJECT_ID/agent-ui', './agent-ui']
+
+  # Construye imagen del backend (Python)
+  - name: 'gcr.io/cloud-builders/docker'
+    args: ['build', '-t', 'gcr.io/$PROJECT_ID/playground', '.']
+
+  # Empuja imagen del frontend
+  - name: 'gcr.io/cloud-builders/docker'
+    args: ['push', 'gcr.io/$PROJECT_ID/agent-ui']
+
+  # Empuja imagen del backend
+  - name: 'gcr.io/cloud-builders/docker'
+    args: ['push', 'gcr.io/$PROJECT_ID/playground']
+
+images:
+  - gcr.io/$PROJECT_ID/agent-ui
+  - gcr.io/$PROJECT_ID/playground
