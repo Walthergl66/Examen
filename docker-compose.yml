@@ -1,0 +1,20 @@
+services:
+  agent-ui:
+    build:
+      context: ./agent-ui
+      dockerfile: Dockerfile
+    ports:
+      - "3000:3000"  # Cambia el puerto según tu app
+    volumes:
+      - ./agent-ui:/app
+    command: ["npm", "run", "dev"]
+
+  playground:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    ports:
+      - "7777:7777"
+    volumes:
+      - ./:/app
+    command: ["python", "playground.py"]
