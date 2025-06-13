@@ -88,7 +88,7 @@ export const usePlaygroundStore = create<PlaygroundStore>()(
       hasStorage: false,
       setHasStorage: (hasStorage) => set(() => ({ hasStorage })),
       chatInputRef: { current: null },
-      selectedEndpoint:'https://examen-504888284293.europe-west1.run.app',
+      selectedEndpoint: 'https://examen-504888284293.europe-west1.run.app',
       setSelectedEndpoint: (selectedEndpoint) =>
         set(() => ({ selectedEndpoint })),
       agents: [],
@@ -108,7 +108,7 @@ export const usePlaygroundStore = create<PlaygroundStore>()(
         set(() => ({ isSessionsLoading }))
     }),
     {
-      name: 'endpoint-storage',
+      name: 'endpoint-storage-v2', // ← nuevo nombre para evitar cache anterior
       storage: createJSONStorage(() => localStorage),
       partialize: (state) => ({
         selectedEndpoint: state.selectedEndpoint
